@@ -1,26 +1,85 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component, Fragment } from 'react';
+import Section from './Components/Section/Section';
+import Statictics from './Components/Statistics/Statistics';
+import PropTypes from 'prop-types';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends Component {
+  state = {
+    good: 0,
+    neutral: 0,
+    bad: 0,
+    isOpen: false,
+  };
+
+  static defaultProps = {
+    step: 1,
+    positiveFeedback: 0,
+  };
+
+  static options = { good: 'Good', neutral: 'Neutral', bad: 'Bad' };
+
+  handleFeedbackIncrement = e => {
+    if (e.target.textContent === 'Good')
+      this.setState(state => ({
+        good: state.good + this.props.step,
+        isOpen: true,
+      }));
+    else if (e.target.textContent === 'Neutral')
+      this.setState(state => ({
+        neutral: state.neutral + this.props.step,
+        isOpen: true,
+      }));
+    else if (e.target.textContent === 'Bad')
+      this.setState(state => ({
+        bad: state.bad + this.props.step,
+        isOpen: true,
+      }));
+  };
+
+  countTotalFeedback = () => {
+    return this.state.good + this.state.neutral + this.state.bad;
+  };
+
+  countPositiveFeedbackPercentage = () => {
+    return this.state.good !== 0
+      ? (
+          (this.state.good /
+            (this.state.good + this.state.neutral + this.state.bad)) *
+          100
+        ).toFixed(2)
+      : '0';
+  };
+
+  render() {
+    const { neutral } = this.state;
+    const { good } = this.state;
+    const { bad } = this.state;
+    const { isOpen } = this.state;
+    const total = this.countTotalFeedback();
+    const positiveFeedback = this.countPositiveFeedbackPercentage();
+
+    return (
+      <Fragment>
+        <Section
+          title="Please leave feedback"
+          onLeaveFeedback={this.handleFeedbackIncrement}
+          options={App.options}
+        />
+
+        <Statictics
+          good={good}
+          neutral={neutral}
+          bad={bad}
+          total={total}
+          isOpen={isOpen}
+          positivePercentage={positiveFeedback}
+        ></Statictics>
+      </Fragment>
+    );
+  }
 }
 
-export default App;
+App.propTypes = {
+  step: PropTypes.number.isRequired,
+  positiveFeedback: PropTypes.number.isRequired,
+};
