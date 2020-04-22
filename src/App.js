@@ -19,21 +19,21 @@ export default class App extends Component {
   static options = { good: 'Good', neutral: 'Neutral', bad: 'Bad' };
 
   handleFeedbackIncrement = e => {
-    if (e.target.textContent === 'Good')
+    if (e.target.name === 'Good')
       this.setState(state => ({
         good: state.good + this.props.step,
         isOpen: true,
       }));
-    else if (e.target.textContent === 'Neutral')
+    else if (e.target.name === 'Neutral')
       this.setState(state => ({
         neutral: state.neutral + this.props.step,
         isOpen: true,
       }));
-    else if (e.target.textContent === 'Bad')
+    else if (e.target.name === 'Bad')
       this.setState(state => ({
         bad: state.bad + this.props.step,
         isOpen: true,
-      }));
+      })); gi
   };
 
   countTotalFeedback = () => {
@@ -43,10 +43,10 @@ export default class App extends Component {
   countPositiveFeedbackPercentage = () => {
     return this.state.good !== 0
       ? (
-          (this.state.good /
-            (this.state.good + this.state.neutral + this.state.bad)) *
-          100
-        ).toFixed(2)
+        (this.state.good /
+          (this.state.good + this.state.neutral + this.state.bad)) *
+        100
+      ).toFixed(2)
       : '0';
   };
 
